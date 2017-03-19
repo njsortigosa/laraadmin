@@ -14,6 +14,8 @@ use Log;
 
 use Dwij\Laraadmin\Models\Module;
 
+use Zizaco\Entrust\EntrustFacade as Entrust;
+
 /**
  * Class LAHelper
  * @package Dwij\Laraadmin\Helpers
