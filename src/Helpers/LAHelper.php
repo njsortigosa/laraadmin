@@ -427,8 +427,18 @@ class LAHelper
             $str .= '<ul class="treeview-menu">';
             foreach($childrens as $children) {
                 $module = Module::get($children->url);
-                if(Module::hasAccess($module->id)) {
-                    $str .= LAHelper::print_menu($children);
+                if($module){
+                    if(Module::hasAccess($module->id)) {
+                        $str .= LAHelper::print_menu($children);
+                    }
+                }else{
+					if($children->id == "5" || $children->id == "36" || $children->id == "37" || $children->id == "38"){ 
+                        if(Entrust::hasRole(['SUPER_ADMIN','ADMIN'])){ 
+                        $str .= LAHelper::print_menu($children);   
+						}
+					}else{
+						$str .= LAHelper::print_menu($children);   
+					}
                 }
             }
             $str .= '</ul>';
