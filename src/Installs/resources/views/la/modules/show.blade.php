@@ -4,7 +4,6 @@
 
 <?php
 use Dwij\Laraadmin\Models\Module;
-use Dwij\Laraadmin\Models\ModuleFields;
 ?>
 
 @section('main-content')
@@ -100,9 +99,8 @@ use Dwij\Laraadmin\Models\ModuleFields;
 							<th>Min</th>
 							<th>Max</th>
 							<th>Required</th>
-							<th>Listing</th>
-							<th style="max-width:300px;">Values</th>
-							<th style="min-width:60px;"><i class="fa fa-cogs"></i></th>
+							<th>Values</th>
+							<th><i class="fa fa-cogs"></i></th>
 						</tr>
 						</thead>
 						<tbody>														
@@ -118,16 +116,8 @@ use Dwij\Laraadmin\Models\ModuleFields;
 									<td>{{ $field['minlength'] }}</td>
 									<td>{{ $field['maxlength'] }}</td>
 									<td>@if($field['required']) <span class="text-danger">True</span>@endif </td>
+									<td><?php echo LAHelper::parseValues($field['popup_vals']) ?></td>
 									<td>
-										<form id="listing_view_cal" action="{{ url(config('laraadmin.adminRoute') . '/module_field_listing_show') }}">
-											<input name="ref_{!! $field['id'] !!}" type="checkbox" @if($field['listing_col'] == 1) checked="checked" @endif>
-											<div class="Switch Ajax Round @if($field['listing_col'] == 1) On @else Off @endif" listid="{{ $field['id'] }}">
-												<div class="Toggle"></div>
-											</div>
-										</form>
-									</td>
-									<td style="max-width:300px;"><?php echo LAHelper::parseValues($field['popup_vals']) ?></td>
-									<td style="min-width:60px;">
 										<a href="{{ url(config('laraadmin.adminRoute') . '/module_fields/'.$field['id'].'/edit') }}" class="btn btn-edit-field btn-warning btn-xs" style="display:inline;padding:2px 5px 3px 5px;" id="edit_{{ $field['colname'] }}"><i class="fa fa-edit"></i></a>
 										<a href="{{ url(config('laraadmin.adminRoute') . '/module_fields/'.$field['id'].'/delete') }}" class="btn btn-edit-field btn-danger btn-xs" style="display:inline;padding:2px 5px 3px 5px;" id="delete_{{ $field['colname'] }}"><i class="fa fa-trash"></i></a>
 										@if($field['colname'] != $module->view_col)
@@ -267,29 +257,7 @@ use Dwij\Laraadmin\Models\ModuleFields;
 					
 					<div class="form-group">
 						<label for="colname">Column Name :</label>
-						<?php
-						$columns = Schema::getColumnListing($module->name_db);
-						
-						$col_list = array();
-						foreach($columns as $col) {
-							// check if this column exists in Module
-							$field = ModuleFields::where('colname', $col)->where('module', $module->id)->first();
-							if($col != 'id' && $col != 'deleted_at' && $col != 'created_at' && $col != 'updated_at' && !isset($field->id)) {
-								$column = DB::connection()->getDoctrineColumn($module->name_db, $col);
-								if($column->getDefault() == '') {
-									$default = "None";
-								} else {
-									$default = $column->getDefault();
-								}									
-								$col_list[$col] = $col." - ".$column->getType().' - '.$column->getLength().' - '.$default; 
-							}
-						}
-
-						if($module->is_gen == 0 && count($col_list) > 0) { ?>
-							{{ Form::select("colname", $col_list, $col_list, ['class'=>'form-control', 'required' => 'required']) }}
-						<?php } else { ?>
-							{{ Form::text("colname", null, ['class'=>'form-control', 'placeholder'=>'Column Name (lowercase)', 'data-rule-minlength' => 2, 'data-rule-maxlength'=>20, 'data-rule-banned-words' => 'true', 'required' => 'required']) }}
-						<?php }	?>
+						{{ Form::text("colname", null, ['class'=>'form-control', 'placeholder'=>'Column Name (lowercase)', 'data-rule-minlength' => 2, 'data-rule-maxlength'=>20, 'data-rule-banned-words' => 'true', 'required' => 'required']) }}
 					</div>
 					
 					<div class="form-group">
@@ -330,11 +298,6 @@ use Dwij\Laraadmin\Models\ModuleFields;
 						<div class="Switch Round Off" style="vertical-align:top;margin-left:10px;"><div class="Toggle"></div></div>
 					</div>
 					
-					<div class="form-group">
-						<label for="listing_col">Show in Index Listing:</label>
-						{{ Form::checkbox("listing_col", "listing_col", false, []) }}
-						<div class="Switch Round Off" style="vertical-align:top;margin-left:10px;"><div class="Toggle"></div></div>
-					</div>
 					<!--
 					<div class="form-group">
 						<label for="popup_vals">Values :</label>
@@ -720,27 +683,6 @@ $(function () {
 			$icon.removeClass('fa-chevron-up');
 			$icon.addClass('fa-chevron-down');
 		}
-	});
-
-	$('.Switch.Ajax').click(function() {
-		var state = "false";
-		if ($(this).hasClass('On')) {
-			state = "false";
-		} else {
-			state = "true";
-		}
-		$.ajax({
-			type: "POST",
-			url : "{{ url(config('laraadmin.adminRoute') . '/module_field_listing_show') }}",
-			data : {
-				_token: '{{ csrf_token() }}',
-				listid: $(this).attr("listid"),
-				state: state,
-			},
-			success : function(data){
-				console.log(data);
-			}
-		});
 	});
 });
 </script>

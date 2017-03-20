@@ -64,12 +64,6 @@
 						{{ Form::checkbox("required", "required") }}
 						<div class="Switch Round Off" style="vertical-align:top;margin-left:10px;"><div class="Toggle"></div></div>
 					</div>
-
-					<div class="form-group">
-						<label for="listing_col">Show in Index Listing:</label>
-						{{ Form::checkbox("listing_col", "listing_col") }}
-						<div class="Switch Round Off" style="vertical-align:top;margin-left:10px;"><div class="Toggle"></div></div>
-					</div>
 					
 					<div class="form-group values">
 						<label for="popup_vals">Values :</label>
@@ -106,7 +100,7 @@
 					
                     <br>
 					<div class="form-group">
-						{!! Form::submit( 'Update', ['class'=>'btn btn-success']) !!} <a href="{{ url(config('laraadmin.adminRoute') . '/modules/'.$module->id) }}" class="btn btn-default pull-right">Cancel</a>
+						{!! Form::submit( 'Update', ['class'=>'btn btn-success']) !!} <button class="btn btn-default pull-right"><a href="{{ url(config('laraadmin.adminRoute') . '/modules/'.$module->id) }}">Cancel</a></button>
 					</div>
 				{!! Form::close() !!}
 				

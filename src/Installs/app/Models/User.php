@@ -1,10 +1,7 @@
 <?php
 /**
- * Model generated using LaraAdmin
+ * Model genrated using LaraAdmin
  * Help: http://laraadmin.com
- * LaraAdmin is open-sourced software licensed under the MIT license.
- * Developed by: Dwij IT Solutions
- * Developer Website: http://dwijitsolutions.com
  */
 
 namespace App;
@@ -52,6 +49,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function uploads()
     {
-        return $this->hasMany('App\Models\Upload');
+        return $this->hasMany('App\Upload');
     }
 }

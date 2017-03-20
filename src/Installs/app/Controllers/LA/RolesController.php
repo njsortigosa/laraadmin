@@ -1,10 +1,7 @@
 <?php
 /**
- * Controller generated using LaraAdmin
+ * Controller genrated using LaraAdmin
  * Help: http://laraadmin.com
- * LaraAdmin is open-sourced software licensed under the MIT license.
- * Developed by: Dwij IT Solutions
- * Developer Website: http://dwijitsolutions.com
  */
 
 namespace App\Http\Controllers\LA;
@@ -27,6 +24,20 @@ use App\Permission;
 class RolesController extends Controller
 {
 	public $show_action = true;
+	public $view_col = 'name';
+	public $listing_cols = ['id', 'name', 'display_name', 'parent', 'dept'];
+	
+	public function __construct() {
+		// Field Access of Listing Columns
+		if(\Dwij\Laraadmin\Helpers\LAHelper::laravel_ver() == 5.3) {
+			$this->middleware(function ($request, $next) {
+				$this->listing_cols = ModuleFields::listingColumnAccessScan('Roles', $this->listing_cols);
+				return $next($request);
+			});
+		} else {
+			$this->listing_cols = ModuleFields::listingColumnAccessScan('Roles', $this->listing_cols);
+		}
+	}
 	
 	/**
 	 * Display a listing of the Roles.
@@ -40,7 +51,7 @@ class RolesController extends Controller
 		if(Module::hasAccess($module->id)) {
 			return View('la.roles.index', [
 				'show_actions' => $this->show_action,
-				'listing_cols' => Module::getListingColumns('Roles'),
+				'listing_cols' => $this->listing_cols,
 				'module' => $module
 			]);
 		} else {
@@ -119,7 +130,7 @@ class RolesController extends Controller
 				}
 				return view('la.roles.show', [
 					'module' => $module,
-					'view_col' => $module->view_col,
+					'view_col' => $this->view_col,
 					'no_header' => true,
 					'no_padding' => "no-padding",
 					'modules_access' => $modules_access
@@ -143,16 +154,17 @@ class RolesController extends Controller
 	 */
 	public function edit($id)
 	{
-		if(Module::hasAccess("Roles", "edit")) {			
+		if(Module::hasAccess("Roles", "edit")) {
+			
 			$role = Role::find($id);
-			if(isset($role->id)) {	
+			if(isset($role->id)) {
 				$module = Module::get('Roles');
 				
 				$module->row = $role;
 				
 				return view('la.roles.edit', [
 					'module' => $module,
-					'view_col' => $module->view_col,
+					'view_col' => $this->view_col,
 				])->with('role', $role);
 			} else {
 				return view('errors.404', [
@@ -187,9 +199,9 @@ class RolesController extends Controller
 			$request->name = str_replace(" ", "_", strtoupper(trim($request->name)));
 			
 			if($request->name == "SUPER_ADMIN") {
-				$request->parent = 1;
+				$request->parent = 0;
 			}
-
+			
 			$insert_id = Module::updateRow("Roles", $request, $id);
 			
 			return redirect()->route(config('laraadmin.adminRoute') . '.roles.index');
@@ -222,24 +234,21 @@ class RolesController extends Controller
 	 *
 	 * @return
 	 */
-	public function dtajax(Request $request)
+	public function dtajax()
 	{
-		$module = Module::get('Roles');
-		$listing_cols = Module::getListingColumns('Roles');
-
-		$values = DB::table('roles')->select($listing_cols)->whereNull('deleted_at');
+		$values = DB::table('roles')->select($this->listing_cols)->whereNull('deleted_at');
 		$out = Datatables::of($values)->make();
 		$data = $out->getData();
 
 		$fields_popup = ModuleFields::getModuleFields('Roles');
 		
 		for($i=0; $i < count($data->data); $i++) {
-			for ($j=0; $j < count($listing_cols); $j++) { 
-				$col = $listing_cols[$j];
+			for ($j=0; $j < count($this->listing_cols); $j++) { 
+				$col = $this->listing_cols[$j];
 				if($fields_popup[$col] != null && starts_with($fields_popup[$col]->popup_vals, "@")) {
 					$data->data[$i][$j] = ModuleFields::getFieldValue($fields_popup[$col], $data->data[$i][$j]);
 				}
-				if($col == $module->view_col) {
+				if($col == $this->view_col) {
 					$data->data[$i][$j] = '<a href="'.url(config('laraadmin.adminRoute') . '/roles/'.$data->data[$i][0]).'">'.$data->data[$i][$j].'</a>';
 				}
 				// else if($col == "author") {
@@ -264,7 +273,7 @@ class RolesController extends Controller
 		$out->setData($data);
 		return $out;
 	}
-
+	
 	public function save_module_role_permissions(Request $request, $id)
 	{
 		if(Entrust::hasRole('SUPER_ADMIN')) {
