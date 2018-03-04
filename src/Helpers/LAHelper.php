@@ -399,6 +399,28 @@ class LAHelper
         return $str;
     }
     
+    public static function has_children($childrens){
+        $has_children = false;
+        foreach($childrens as $children) {
+            $module = Module::get($children->url);
+            if($module){
+                if(Module::hasAccess($module->id)) {
+                    $has_children = true;
+                }
+            }else{
+                if($children->id == "5" || $children->id == "36" || $children->id == "37" || $children->id == "38"){ 
+                    if(Entrust::hasRole(['SUPER_ADMIN','ADMIN'])){ 
+                        $has_children = true;   
+                    }
+                }else{
+                        $has_children = true;   
+                }
+            }
+        }
+        
+        return $has_children;
+    }
+    
     /**
      * Print the sidebar menu view.
      * This needs to be done recursively
@@ -411,10 +433,11 @@ class LAHelper
     public static function print_menu($menu, $active = false)
     {
         $childrens = \Dwij\Laraadmin\Models\Menu::where("parent", $menu->id)->orderBy('hierarchy', 'asc')->get();
-
+        $has_children = LAHelper::has_children($childrens);
         $treeview = "";
         $subviewSign = "";
-        if(count($childrens)) {
+        $str = "";
+        if($has_children) {
             $treeview = " class=\"treeview\"";
             $subviewSign = '<i class="fa fa-angle-left pull-right"></i>';
         }
@@ -422,10 +445,10 @@ class LAHelper
         if($active) {
             $active_str = 'class="active"';
         }
-        
-        $str = '<li' . $treeview . ' ' . $active_str . '><a href="' . url(config("laraadmin.adminRoute") . '/' . $menu->url) . '"><i class="fa ' . $menu->icon . '"></i> <span>' . LAHelper::real_module_name($menu->name) . '</span> ' . $subviewSign . '</a>';
-        
-        if(count($childrens)) {
+        if($menu->type=="module" || ($menu->type=="custom" && $has_children) ){
+            $str = '<li' . $treeview . ' ' . $active_str . '><a href="' . url(config("laraadmin.adminRoute") . '/' . $menu->url) . '"><i class="fa ' . $menu->icon . '"></i> <span>' . LAHelper::real_module_name($menu->name) . '</span> ' . $subviewSign . '</a>';
+        }            
+        if($has_children) {
             $str .= '<ul class="treeview-menu">';
             foreach($childrens as $children) {
                 $module = Module::get($children->url);
@@ -434,18 +457,20 @@ class LAHelper
                         $str .= LAHelper::print_menu($children);
                     }
                 }else{
-					if($children->id == "5" || $children->id == "36" || $children->id == "37" || $children->id == "38"){ 
+                    if($children->id == "5" || $children->id == "36" || $children->id == "37" || $children->id == "38"){ 
                         if(Entrust::hasRole(['SUPER_ADMIN','ADMIN'])){ 
+                            $str .= LAHelper::print_menu($children);   
+                        }
+                    }else{
                         $str .= LAHelper::print_menu($children);   
-						}
-					}else{
-						$str .= LAHelper::print_menu($children);   
-					}
+                    }
                 }
             }
             $str .= '</ul>';
         }
-        $str .= '</li>';
+        if($menu->type=="module" || ($menu->type=="custom" && $has_children) ){
+            $str .= '</li>';
+        }
         return $str;
     }
     
