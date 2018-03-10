@@ -430,7 +430,7 @@ class LAHelper
      * @param $menu menu array from database
      * @return string menu in html string
      */
-    /*
+    
     public static function print_menu($menu, $active = false)
     {
         $childrens = \Dwij\Laraadmin\Models\Menu::where("parent", $menu->id)->orderBy('hierarchy', 'asc')->get();
@@ -446,9 +446,16 @@ class LAHelper
         if($active) {
             $active_str = 'class="active"';
         }
-        if($menu->type=="module" || ($menu->type=="custom" && $has_children) ){
+        if($menu->type=="module"){
             $str = '<li' . $treeview . ' ' . $active_str . '><a href="' . url(config("laraadmin.adminRoute") . '/' . $menu->url) . '"><i class="fa ' . $menu->icon . '"></i> <span>' . LAHelper::real_module_name($menu->name) . '</span> ' . $subviewSign . '</a>';
-        }            
+        }else if($menu->type=="custom"){
+            if(count($childrens) && $has_children){
+                $str = '<li' . $treeview . ' ' . $active_str . '><a href="' . url(config("laraadmin.adminRoute") . '/' . $menu->url) . '"><i class="fa ' . $menu->icon . '"></i> <span>' . LAHelper::real_module_name($menu->name) . '</span> ' . $subviewSign . '</a>';
+            }else{
+                $str = '<li' . $treeview . ' ' . $active_str . '><a href="' . url(config("laraadmin.adminRoute") . '/' . $menu->url) . '"><i class="fa ' . $menu->icon . '"></i> <span>' . LAHelper::real_module_name($menu->name) . '</span> ' . $subviewSign . '</a>';
+            }
+        }   
+        
         if($has_children) {
             $str .= '<ul class="treeview-menu">';
             foreach($childrens as $children) {
@@ -474,10 +481,9 @@ class LAHelper
         }
         return $str;
     }
-     * 
-     */
     
     // LAHelper::print_menu($menu)
+    /*
     public static function print_menu($menu, $active = false) {
             $childrens = \Dwij\Laraadmin\Models\Menu::where("parent", $menu->id)->orderBy('hierarchy', 'asc')->get();
 
@@ -517,6 +523,8 @@ class LAHelper
             $str .= '</li>';
             return $str;
     }
+     * 
+     */
     
     /**
      * Print the top navbar menu view.
