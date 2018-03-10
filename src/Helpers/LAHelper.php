@@ -430,7 +430,7 @@ class LAHelper
      * @param $menu menu array from database
      * @return string menu in html string
      */
-    
+    /*
     public static function print_menu($menu, $active = false)
     {
         $childrens = \Dwij\Laraadmin\Models\Menu::where("parent", $menu->id)->orderBy('hierarchy', 'asc')->get();
@@ -476,14 +476,20 @@ class LAHelper
             }
             $str .= '</ul>';
         }
-        if($menu->type=="module" || ($menu->type=="custom" && $has_children) ){
+        if($menu->type=="module"){
             $str .= '</li>';
+        }else if($menu->type=="custom"){
+            if(count($childrens) && $has_children){
+                $str .= '</li>';
+            }else{
+                $str .= '</li>';
+            }
         }
         return $str;
     }
-    
+    */
     // LAHelper::print_menu($menu)
-    /*
+    
     public static function print_menu($menu, $active = false) {
             $childrens = \Dwij\Laraadmin\Models\Menu::where("parent", $menu->id)->orderBy('hierarchy', 'asc')->get();
 
@@ -523,8 +529,7 @@ class LAHelper
             $str .= '</li>';
             return $str;
     }
-     * 
-     */
+   
     
     /**
      * Print the top navbar menu view.
