@@ -430,6 +430,7 @@ class LAHelper
      * @param $menu menu array from database
      * @return string menu in html string
      */
+    /*
     public static function print_menu($menu, $active = false)
     {
         $childrens = \Dwij\Laraadmin\Models\Menu::where("parent", $menu->id)->orderBy('hierarchy', 'asc')->get();
@@ -472,6 +473,49 @@ class LAHelper
             $str .= '</li>';
         }
         return $str;
+    }
+     * 
+     */
+    
+    // LAHelper::print_menu($menu)
+    public static function print_menu($menu, $active = false) {
+            $childrens = \Dwij\Laraadmin\Models\Menu::where("parent", $menu->id)->orderBy('hierarchy', 'asc')->get();
+
+            $treeview = "";
+            $subviewSign = "";
+            if(count($childrens)) {
+                    $treeview = " class=\"treeview\"";
+                    $subviewSign = '<i class="fa fa-angle-left pull-right"></i>';
+            }
+            $active_str = '';
+            if($active) {
+                    $active_str = 'class="active"';
+            }
+
+            $str = '<li'.$treeview.' '.$active_str.'><a href="'.url(config("laraadmin.adminRoute") . '/' . $menu->url ) .'"><i class="fa '.$menu->icon.'"></i> <span>'.LAHelper::real_module_name($menu->name).'</span> '.$subviewSign.'</a>';
+
+            if(count($childrens)) {
+                    $str .= '<ul class="treeview-menu">';
+                    foreach($childrens as $children) {
+                        $module = Module::get($children->url);
+                        if($module){
+                            if(Module::hasAccess($module->id)) {
+                                $str .= LAHelper::print_menu($children);
+                            }
+                        }else{
+                            if($children->id == "5" || $children->id == "36" || $children->id == "37" || $children->id == "38"){ 
+                                if(Entrust::hasRole(['SUPER_ADMIN','ADMIN'])){ 
+                                    $str .= LAHelper::print_menu($children);   
+                                }
+                            }else{
+                                $str .= LAHelper::print_menu($children);   
+                            }
+                        }
+                    }
+                    $str .= '</ul>';
+            }
+            $str .= '</li>';
+            return $str;
     }
     
     /**
