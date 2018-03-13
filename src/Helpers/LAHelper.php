@@ -449,8 +449,10 @@ class LAHelper
         if($menu->type=="module"){
             $str = '<li' . $treeview . ' ' . $active_str . '><a href="' . url(config("laraadmin.adminRoute") . '/' . $menu->url) . '"><i class="fa ' . $menu->icon . '"></i> <span>' . LAHelper::real_module_name($menu->name) . '</span> ' . $subviewSign . '</a>';
         }else if($menu->type=="custom"){
-            if(count($childrens) && $has_children){
-                $str = '<li' . $treeview . ' ' . $active_str . '><a href="' . url(config("laraadmin.adminRoute") . '/' . $menu->url) . '"><i class="fa ' . $menu->icon . '"></i> <span>' . LAHelper::real_module_name($menu->name) . '</span> ' . $subviewSign . '</a>';
+            if(count($childrens)){
+                if($has_children){
+                    $str = '<li' . $treeview . ' ' . $active_str . '><a href="' . url(config("laraadmin.adminRoute") . '/' . $menu->url) . '"><i class="fa ' . $menu->icon . '"></i> <span>' . LAHelper::real_module_name($menu->name) . '</span> ' . $subviewSign . '</a>';
+                }
             }else{
                 $str = '<li' . $treeview . ' ' . $active_str . '><a href="' . url(config("laraadmin.adminRoute") . '/' . $menu->url) . '"><i class="fa ' . $menu->icon . '"></i> <span>' . LAHelper::real_module_name($menu->name) . '</span> ' . $subviewSign . '</a>';
             }
