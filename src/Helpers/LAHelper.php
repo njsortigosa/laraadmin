@@ -467,7 +467,7 @@ class LAHelper
                         $str .= LAHelper::print_menu($children);
                     }
                 }else{
-                    if($children->id == "5" || $children->id == "36" || $children->id == "37" || $children->id == "38"){ 
+                    if($children->id == "5" || $children->id == "36" || $children->id == "37" || $children->id == "38" || $children->id == "65" || $children->id == "66" || $children->id == "67"){ 
                         if(Entrust::hasRole(['SUPER_ADMIN','ADMIN'])){ 
                             $str .= LAHelper::print_menu($children);   
                         }
@@ -481,8 +481,10 @@ class LAHelper
         if($menu->type=="module"){
             $str .= '</li>';
         }else if($menu->type=="custom"){
-            if(count($childrens) && $has_children){
-                $str .= '</li>';
+            if(count($childrens)){
+                if($has_children){
+                    $str .= '</li>';
+                }
             }else{
                 $str .= '</li>';
             }
