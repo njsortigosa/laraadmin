@@ -405,10 +405,16 @@ class LAHelper
             $module = Module::get($children->url);
             if($module){
                 if(Module::hasAccess($module->id)) {
-                    $has_children = true;
+                    if($module->id == "5"){ 
+                        if(Entrust::hasRole(['SUPER_ADMIN','ADMIN'])){
+                            $has_children = true;
+                        }
+                    }else{
+                        $has_children = true;
+                    }
                 }
             }else{
-                if($children->id == "5" || $children->id == "36" || $children->id == "37" || $children->id == "38"){ 
+                if($children->id == "5" || $children->id == "36" || $children->id == "37" || $children->id == "38" || $children->id == "65" || $children->id == "66" || $children->id == "67"){ 
                     if(Entrust::hasRole(['SUPER_ADMIN','ADMIN'])){ 
                         $has_children = true;   
                     }
