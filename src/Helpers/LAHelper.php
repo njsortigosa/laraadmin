@@ -447,7 +447,7 @@ class LAHelper
             $active_str = 'class="active"';
         }
         if($menu->type=="module"){
-            if($children->id == "5"){ 
+            if($menu->id == "5"){ 
                 if(Entrust::hasRole(['SUPER_ADMIN','ADMIN'])){
                     $str = '<li' . $treeview . ' ' . $active_str . '><a href="' . url(config("laraadmin.adminRoute") . '/' . $menu->url) . '"><i class="fa ' . $menu->icon . '"></i> <span>' . LAHelper::real_module_name($menu->name) . '</span> ' . $subviewSign . '</a>';
                 }
