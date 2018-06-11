@@ -940,7 +940,7 @@ class Module extends Model
 					case 'Date':
 						if($request->{$field['colname']} != "") {
 							$date = $request->{$field['colname']};
-							$d2 = date_parse_from_format("d/m/Y",$date);
+							$d2 = date_parse_from_format("m/d/Y",$date);
 							$request->{$field['colname']} = date("Y-m-d", strtotime($d2['year']."-".$d2['month']."-".$d2['day']));
 						}
 						$row->{$field['colname']} = $request->{$field['colname']};
@@ -949,7 +949,7 @@ class Module extends Model
 						#TODO: Bug fix
 						if($request->{$field['colname']} != "") {
 							$date = $request->{$field['colname']};
-							$d2 = date_parse_from_format("d/m/Y h:i A",$date);
+							$d2 = date_parse_from_format("m/d/Y h:i A",$date);
 							$request->{$field['colname']} = date("Y-m-d H:i:s", strtotime($d2['year']."-".$d2['month']."-".$d2['day']." ".substr($date, 11)));
 						}
 						$row->{$field['colname']} = $request->{$field['colname']};

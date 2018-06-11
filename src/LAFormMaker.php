@@ -135,7 +135,7 @@ class LAFormMaker
 					}
 					$dval = $default_val;
 					if($default_val != "") {
-						$dval = date("d/m/Y", strtotime($default_val));
+						$dval = date("m/d/Y", strtotime($default_val));
 					}
 					
 					unset($params['data-rule-maxlength']);
@@ -160,7 +160,7 @@ class LAFormMaker
 					// ############### Remaining
 					$dval = $default_val;
 					if($default_val != "") {
-						$dval = date("d/m/Y h:i A", strtotime($default_val));
+						$dval = date("m/d/Y h:i A", strtotime($default_val));
 					}
 					$out .= "<div class='input-group datetime'>";
 					$out .= Form::text($field_name, $dval, $params);
