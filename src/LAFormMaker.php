@@ -26,7 +26,7 @@ class LAFormMaker
 			$label = $module->fields[$field_name]['label'];
 			$field_type = $module->fields[$field_name]['field_type'];
 			$unique = $module->fields[$field_name]['unique'];
-			$defaultvalue = $module->fields[$field_name]['defaultvalue'];
+			$defaultvalue = $module->fields[$field_name]['defaultvalue']!=''?$module->fields[$field_name]['defaultvalue']:null;
 			$minlength = $module->fields[$field_name]['minlength'];
 			$maxlength = $module->fields[$field_name]['maxlength'];
 			$required = $module->fields[$field_name]['required'];
