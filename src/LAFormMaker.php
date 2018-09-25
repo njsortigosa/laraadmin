@@ -185,7 +185,7 @@ class LAFormMaker
 					
 					unset($params['data-rule-maxlength']);
 					$params['data-placeholder'] = $params['placeholder'];
-					unset($params['placeholder']);
+					//unset($params['placeholder']);
 					$params['rel'] = "select2";
 					
 					//echo $defaultvalue;
