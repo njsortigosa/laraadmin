@@ -505,7 +505,8 @@ class LAFormMaker
 						}
 					}
 					$default_val = LAFormMaker::process_values($default_val);
-					$out .= Form::select($field_name."[]", $default_val, $default_val, $params);
+                    $selectedValues = array_keys($default_val);
+					$out .= Form::select($field_name."[]", $default_val, $selectedValues, $params);
 					break;
 				case 'Textarea':
 					$out .= '<label for="'.$field_name.'">'.$label.$required_ast.' :</label>';
